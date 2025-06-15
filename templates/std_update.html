@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Student</title>
+    <script src="update_student.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        /* Body Fade-in */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #512DA8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            opacity: 0;
+            animation: fadeInBody 0.2s ease-in forwards;
+        }
+
+        @keyframes fadeInBody {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Container Fade-in */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            opacity: 0;
+            transform: scale(0.95);
+            animation: fadeInContainer 0.2s ease-in forwards 0.5s;
+        }
+
+        @keyframes fadeInContainer {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Text & Form Fields Fade-in */
+        h2, label, input, select, button {
+            opacity: 0;
+            animation: fadeInElements 0.2s ease-in forwards 0.6s;
+        }
+
+        @keyframes fadeInElements {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            color: #512DA8;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #512DA8;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #512DA8;
+        }
+
+        .cancel-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            font-family: 'Poppins', sans-serif;
+            padding: 8px 20px;
+            width: auto;
+            min-width: 100px;
+            border: 1px solid #512da8;
+            background-color: white;
+            color: #512da8;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            animation: fadeInElements 0.2s ease-in forwards 0.6s;
+        }
+
+        .cancel-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+            background-color: white;
+        }
+
+        .message {
+            text-align: center;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .error { color: red; }
+        .success { color: green; }
+
+    </style>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+    <button class="cancel-btn" onclick="window.location.href = 'student_info.html';">Back</button>
+
+    <div class="container">
+        <h2>Update Student Details</h2>
+
+        <label>Enter Student ID:</label>
+        <input type="text" id="student_id">
+        <button onclick="fetchStudentData()">Fetch Data</button>
+
+        <label>Name:</label>
+        <input type="text" id="name">
+
+        <label>Father's Name:</label>
+        <input type="text" id="father_name">
+
+        <label>Mother's Name:</label>
+        <input type="text" id="mother_name">
+
+        <label>Address:</label>
+        <input type="text" id="address">
+
+        <label>Mobile No:</label>
+        <input type="text" id="mobileno">
+
+        <label>Email Address:</label>
+        <input type="email" id="email_address">
+
+        <label>Date of Birth:</label>
+        <input type="date" id="date_of_birth">
+
+        <label>Gender:</label>
+        <select id="gender">
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <button onclick="updateStudentData()">Update Student</button>
+
+        <p id="message" class="message"></p>
+    </div>
+
+    <script>
+        const apiBaseUrl = "http://localhost:5000"; // Flask Backend URL
+
+        // Fetch student details by ID
+ // ✅ Toastify ka function
+function showToast(message) {
+    Toastify({
+        text: message,
+        duration: 3000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "green",
+        stopOnFocus: true,
+    }).showToast();
+}
+
+// ✅ Fetch student details by ID
+async function fetchStudentData() {
+            const studentId = document.getElementById("student_id").value.trim();
+
+            if (!studentId) {
+                document.getElementById("message").textContent = "❌ Please enter a Student ID!";
+                document.getElementById("message").className = "message error";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/get_student/${studentId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById("name").value = data.student.name;
+                    document.getElementById("father_name").value = data.student.father_name;
+                    document.getElementById("mother_name").value = data.student.mother_name;
+                    document.getElementById("address").value = data.student.address;
+                    document.getElementById("mobileno").value = data.student.mobileno;
+                    document.getElementById("email_address").value = data.student.email_address;
+
+                    let dob = new Date(data.student.date_of_birth);
+                    let formattedDOB = dob.toISOString().split("T")[0];
+                    document.getElementById("date_of_birth").value = formattedDOB;
+
+                    document.getElementById("gender").value = data.student.gender;
+
+                    // ✅ SUCCESS MESSAGE VIA TOASTIFY
+                    showToast("✅ Student data loaded successfully!");
+                } else {
+                    document.getElementById("message").textContent = "❌ Student not found!";
+                    document.getElementById("message").className = "message error";
+                }
+            } catch (error) {
+                document.getElementById("message").textContent = "❌ Error fetching data!";
+                document.getElementById("message").className = "message error";
+            }
+        }
+
+    </script>
+
+</body>
+</html>

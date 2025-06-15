@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password - Security Question</title>
+  
+  <!-- Toastify CDN -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .forgot-container {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: -10px 10px 15px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      max-width: 90%;
+      padding: 30px;
+      text-align: center;
+      opacity: 0;  /* Initially hidden */
+      transform: translateY(20px); /* Small movement */
+      transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+
+    .show {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 22px;
+    }
+
+    .input-container {
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    input {
+      background-color: #f0f0f0;
+      border: none;
+      padding: 10px 15px;
+      width: 100%;
+      font-size: 14px;
+      border-radius: 5px;
+      outline: none;
+      position: relative;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    button {
+      background-color: #512da8;
+      color: #fff;
+      font-size: 14px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #5c6bc0;
+      transform: scale(1.05);
+    }
+    .cancel-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 15px 35px;
+            font-size: 1.6em; /* Increased size */
+            background-color: white;
+            color: #12082b;
+            border: 2px solid #512da8;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif; 
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: white;
+        }
+
+        .cancel-btn:hover {
+            transform: scale(1.07);
+            box-shadow: white
+        }
+  </style>
+</head>
+<body>
+  <button class="cancel-btn" onclick="window.location.href = 'forget_Password.html';">Back</button>
+  <div class="forgot-container show" id="step1">
+    <h1>Enter Your Email</h1>
+    <form onsubmit="fetchSecurityQuestion(event)">
+      <input type="email" id="email" placeholder="Enter Email" required>
+      <button type="submit">Next</button>
+    </form>
+  </div>
+
+  <div class="forgot-container" id="step2" style="display: none;">
+    <h1>Answer Security Question</h1>
+    <p id="security-question"></p>
+    <form onsubmit="verifySecurityAnswer(event)">
+      <input type="text" id="security-answer" placeholder="Enter Answer" required>
+      <button type="submit">Verify</button>
+    </form>
+  </div>
+
+  <script>
+    // 🟢 Function to fetch security question
+    async function fetchSecurityQuestion(event) {
+      event.preventDefault();
+      let email = document.getElementById("email").value.trim();
+
+      try {
+        let response = await fetch("http://127.0.0.1:5000/verify-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+          mode: "cors"
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP Error! Status: ${response.status}`);
+
+        }
+
+        let result = await response.json();
+        document.getElementById("step1").style.display = "none";
+        document.getElementById("step2").style.display = "block";
+        document.getElementById("step2").classList.add("show"); // ✅ Fade-in Animation
+        document.getElementById("security-question").textContent = result.security_question;
+
+        // ✅ Show Toastify Notification
+        Toastify({
+          text: "✅ Email Found! Answer the Security Question.",
+          duration: 3000,
+          gravity: "top",
+          position: "center",
+          backgroundColor: "linear-gradient(to right, #28a745, #218838)"
+        }).showToast();
+
+      } catch (error) {
+        console.error("❌ Fetch Error:", error);
+        Toastify({
+          text: "❌ Invalid Email! Try Again.",
+          duration: 3000,
+          gravity: "top",
+          position: "center",
+          backgroundColor: "linear-gradient(to right, #dc3545, #c82333)"
+        }).showToast();
+      }
+    }
+
+    // 🟢 Function to verify security answer
+    async function verifySecurityAnswer(event) {
+  event.preventDefault();
+  let email = document.getElementById("email").value.trim();
+  let security_answer = document.getElementById("security-answer").value.trim();
+
+  try {
+    let response = await fetch("http://127.0.0.1:5000/verify-security-answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, security_answer }),
+      mode: "cors"
+    });
+
+    let result = await response.json();
+
+    if (response.status === 200) {
+      // ✅ Store email locally for password reset page
+      localStorage.setItem("resetUserId", email);  
+
+      Toastify({
+        text: "✅ Answer Verified! Redirecting to Reset Password.",
+        duration: 3000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "linear-gradient(to right, #28a745, #218838)"
+      }).showToast();
+
+      setTimeout(() => {
+        window.location.href = "reset_password.html";
+      }, 3000);
+
+    } else {
+      Toastify({
+        text: "❌ Incorrect Answer! Try Again.",
+        duration: 3000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "linear-gradient(to right, #dc3545, #c82333)"
+      }).showToast();
+    }
+
+  } catch (error) {
+    console.error("Fetch Error:", error);
+    Toastify({
+      text: "❌ Server Error! Try Again Later.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "linear-gradient(to right, #ff8800, #ff6f00)"
+    }).showToast();
+  }
+}
+
+  </script>
+</body>
+</html>

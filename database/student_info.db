@@ -1,0 +1,13 @@
+CREATE DATABASE College_student;
+USE College_student;
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    father_name VARCHAR(100) NOT NULL,
+    mother_name VARCHAR(100) NOT NULL,
+    address TEXT NOT NULL,
+    mobileno VARCHAR(15) NOT NULL,
+    email_address VARCHAR(100) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    gender ENUM('Male', 'Female', 'Other') NOT NULL
+);

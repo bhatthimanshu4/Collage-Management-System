@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Student</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #512DA8; /* Light background */
+        }
+
+        .container {
+            width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeIn 0.1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        h2 {
+            color: #512DA8;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #512DA8;
+            box-shadow: 0 0 5px rgba(81, 45, 168, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #512DA8;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #3a2486;
+        }
+
+        /* Back Button */
+        .back-button {
+            width: 5%;
+            max-width: 1000px;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 8px 16px;
+            background-color: white;
+            color: #512DA8;
+            font-size: 14px;
+            border: 2px solid #512DA8;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: white;
+            transform: scale(1.05);
+        }
+        .button:hover{
+            transform: scale(1.06);
+        }
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <!-- ✅ Toastify JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+<body>
+
+    <button class="back-button" onclick="runScript('student_marksheet.html')">Back</button>
+
+    <div class="container">
+        <h2>Search Student</h2>
+        <label class="label" for="searchRollNumber">Enter Roll Number:</label>
+        <input type="text" id="searchRollNumber" placeholder="Enter Roll Number">
+        <button type="button" onclick="searchStudent()">Search</button>
+    </div>
+
+    <script>
+     function showToast(message, type = "success") {
+        Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: type === "success" ? "#4CAF50" : "darkred",
+            stopOnFocus: true,
+        }).showToast();
+    }
+
+    async function searchStudent() {
+    const rollNumber = document.getElementById("searchRollNumber").value.trim();
+
+    if (!rollNumber) {
+        showToast("⚠️ Please enter a roll number to search.", "error" );
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/get_marksheet?roll_number=${rollNumber}`);
+        const result = await response.json();
+
+        if (result.success) {
+            showToast("✅ Student found! Redirecting...", "success");
+
+            setTimeout(() => {
+                window.location.href = `marksheet_deatils_search.html?roll_number=${rollNumber}`;
+            }, 1500);
+        } else {
+            showToast("❌ No student found with this roll number.", "error");
+        }
+    } catch (error) {
+        console.error("❌ Error:", error);
+        showToast("❌ Failed to fetch student data.", "error");
+    }
+}
+
+
+    function runScript(scriptName) {
+        window.location.href = scriptName;
+    }
+    </script>
+
+</body>
+</html>

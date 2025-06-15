@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            opacity: 0;
+            animation: fadeIn 0.1s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background-color: #512DA8;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .form-box {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+            animation-delay: 0.5s;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #512DA8;
+            color: white;
+        }
+        .cancel-btn {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                font-family: 'Poppins', sans-serif;
+                padding: 10px 30px;
+                border: 1px solid #512da8;
+                background-color: white;
+                color: #512da8;
+                border-radius: 8px;
+                font-size: 18px;
+                transition: all 0.3s ease-in-out;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .cancel-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+            }
+
+        /* Fade-in animation for each row */
+        .fade-in-row {
+            opacity: 0;
+            animation: fadeInRow 0.8s ease-in-out forwards;
+        }
+
+        @keyframes fadeInRow {
+            0% { opacity: 0; transform: translateY(5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+    <button class="cancel-btn" onclick="window.location.href='collage_Libaray_fronted.html'">Back</button>
+
+
+    <div class="header">Library Records</div>
+
+    <div class="container">
+        <!-- Table to display fetched data -->
+        <table id="library-table">
+            <thead>
+                <tr>
+                    <th>Membership Type</th>
+                    <th>Reference No.</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Address</th>
+                    <th>Post</th>
+                    <th>Mobile No.</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Year of Publication</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        // Function to show toast notifications
+        function showToast(message, type = "success") {
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                className: type === "success" ? "toastify-success" : "toastify-error",
+                stopOnFocus: true,
+            }).showToast();
+        }
+
+        // Function to fetch data from backend
+   // Function to format date as YYYY-MM-DD
+function formatDate(dateString) {
+    if (!dateString) return "N/A";  // Agar date missing hai toh "N/A" show kare
+    let date = new Date(dateString);
+    return date.toISOString().split('T')[0];  // YYYY-MM-DD format
+}
+
+// Function to fetch data from backend
+async function fetchLibraryData() {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/get_library_data');
+        const data = await response.json();
+        console.log(data);
+
+        if (data.success) {
+            let tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = "";  // Table clear karna
+
+            // Loop through each record from the API response
+            data.data.forEach((record, index) => {
+                let tableRow = document.createElement("tr");
+                tableRow.classList.add("fade-in-row");
+                tableRow.style.animationDelay = `${index * 0.2}s`;
+
+                // ✅ Borrow & Due Dates ko Format karo
+                let borrowDate = formatDate(record.borrow);
+                let dueDate = formatDate(record.due);
+
+                // Add each record value into the table row
+                tableRow.innerHTML = `
+                    <td>${record.mbtype}</td>
+                    <td>${record.referenceno}</td>
+                    <td>${record.firstname}</td>
+                    <td>${record.lastname}</td>
+                    <td>${record.address}</td>
+                    <td>${record.post}</td>
+                    <td>${record.mobileno}</td>
+                    <td>${record.title}</td>
+                    <td>${record.author}</td>
+                    <td>${borrowDate}</td>
+                    <td>${dueDate}</td>
+                    <td>${record.year_of_pub}</td>
+                `;
+
+                tableBody.appendChild(tableRow);
+            });
+        } else {
+            showToast('❌ No library records found!', "error");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        showToast('❌ Failed to fetch library records!', "error");
+    }
+}
+
+// Fetch data when the page loads
+window.onload = fetchLibraryData;
+    </script>
+
+</body>
+</html>

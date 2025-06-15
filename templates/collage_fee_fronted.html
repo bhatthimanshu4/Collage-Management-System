@@ -1,0 +1,129 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>College Fee Report</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+            /* Fade-in effect */
+            body {
+                font-family: 'Poppins', sans-serif;
+                background: linear-gradient(135deg, #512da8, #6a0dad);
+                margin: 0;
+                padding: 0;
+                color: #fff;
+                line-height: 1.6;
+                opacity: 0;
+                animation: fadeIn 0.2s ease-in forwards;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            .container {
+                width: 70%;
+                max-width: 850px;
+                margin: 80px auto;
+                background-color: #ffffff;
+                padding: 40px;
+                border-radius: 12px;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .container:hover {
+                transform: translateY(-3px);
+            }
+
+            .menu-title {
+                text-align: center;
+                font-size: 2.4em;
+                color: #333;
+                margin-bottom: 30px;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+
+            .menu-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 18px;
+                margin: 15px 0;
+                background-color: #f0f4f8;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                transition: background-color 0.3s ease;
+            }
+
+            .menu-item:hover {
+                background-color: #e1e9f3;
+            }
+
+            .menu-item span {
+                font-size: 1.6em;
+                color: #333;
+                font-weight: 500;
+            }
+
+            .view-btn {
+                padding: 10px 20px;
+                font-size: 1.2em;
+                background-color: #512da8;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.3s, transform 0.3s;
+            }
+
+            .view-btn:hover {
+                background-color: #3f1c87;
+                transform: scale(1.05);
+                box-shadow: 0px 0px 10px rgba(81, 45, 168, 0.7);
+            }
+
+            .cancel-btn{
+            position: absolute;
+            top: 15px;
+            width: auto;
+            left: 15px;
+            padding: 10px 20px;
+            background-color: white;
+            color: #512DA8;
+            font-size: 16px;
+            border: 2px solid #512DA8;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .cancel-btn:hover {
+            background-color: #f2f2f2;
+            transform: scale(1.05);
+        }
+        </style>
+    </head>
+    <body>
+        <button class="cancel-btn" onclick="window.location.href='college_menu.html'">Back</button>
+        <div class="container">
+            <h1 class="menu-title">Fee Report</h1>
+
+            <div class="menu-item">
+                <span>Generate Receipt</span>
+                <button class="view-btn" onclick="window.location.href='fee_recipt_genrate.html'">Generate</button>
+            </div>
+
+            <div class="menu-item">
+                <span>Check Fee Details</span>
+                <button class="view-btn" onclick="window.location.href='std_fee_report_deatils.html'">viewport</button>
+            </div>
+
+            
+        </div>
+
+    </body>
+    </html>

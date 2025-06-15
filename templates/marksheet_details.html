@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marksheet Details</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+    color: white;
+    background-color: #512da8;
+    padding: 15px; /* Box ke andar spacing */
+    text-align: center; /* Text ko center karna */
+    display: block; /* Ensure it takes full width */
+    border-radius: 8px; /* Rounded corners (optional) */
+}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #512da8;
+            color: white;
+        }
+        button {
+            background-color: #512da8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #673ab7;
+        }
+    </style>
+
+    <!-- ✅ Toastify CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Student Marksheet Details</h1>
+        <div id="studentDetails"></div>
+        <button onclick="goBack()">Back</button>
+    </div>
+
+    <!-- ✅ Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        // 🟢 Toastify Function
+        function showToast(message, type = "success") {
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                backgroundColor: type === "success" ? "#28a745" : "#b71c1c", // ✅ Green for success, Dark Red for error
+                stopOnFocus: true,
+            }).showToast();
+        }
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            const params = new URLSearchParams(window.location.search);
+            const rollNumber = params.get("roll_number"); // ✅ Get roll_number from URL
+
+            if (!rollNumber) {
+                showToast("❌ Roll Number is missing in the URL!", "error");
+                document.getElementById("studentDetails").innerHTML = "<p>❌ Roll Number is missing in the URL.</p>";
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/get_marksheet?roll_number=${rollNumber}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayMarksheet(result.data);
+                    showToast("✅ Marksheet Loaded Successfully!", "success");
+                } else {
+                    showToast("❌ " + result.message, "error");
+                    document.getElementById("studentDetails").innerHTML = `<p>❌ ${result.message}</p>`;
+                }
+            } catch (error) {
+                console.error("❌ Error fetching data:", error);
+                showToast("❌ Failed to fetch student data!", "error");
+                document.getElementById("studentDetails").innerHTML = "<p>❌ Failed to fetch student data.</p>";
+            }
+        });
+
+        // 🟢 Function to Display Data in Table
+        function displayMarksheet(student) {
+            document.getElementById("studentDetails").innerHTML = `
+                <table>
+                    <tr><th>Field</th><th>Details</th></tr>
+                    <tr><td><strong>Name:</strong></td><td>${student.name}</td></tr>
+                    <tr><td><strong>Roll Number:</strong></td><td>${student.roll_number}</td></tr>
+                    <tr><td><strong>Father's Name:</strong></td><td>${student.father_name}</td></tr>
+                    <tr><td><strong>Mother's Name:</strong></td><td>${student.mother_name}</td></tr>
+                    <tr><td><strong>Date of Birth:</strong></td><td>${student.dob}</td></tr>
+                    <tr><td><strong>Gender:</strong></td><td>${student.gender}</td></tr>
+                    <tr><td><strong>School:</strong></td><td>${student.school_name}</td></tr>
+                    <tr><td><strong>Email:</strong></td><td>${student.email}</td></tr>
+                    
+                    <tr><th colspan="2">Marks</th></tr>
+                    <tr><td><strong>Mathematics:</strong></td><td>${student.mathematics}</td></tr>
+                    <tr><td><strong>Physics:</strong></td><td>${student.physics}</td></tr>
+                    <tr><td><strong>Chemistry:</strong></td><td>${student.chemistry}</td></tr>
+                    <tr><td><strong>Programming:</strong></td><td>${student.programming}</td></tr>
+                    <tr><td><strong>English:</strong></td><td>${student.english}</td></tr>
+                    
+                    <tr><th colspan="2">Computed Results</th></tr>
+                    <tr><td><strong>Total Marks:</strong></td><td>${student.total_marks}/500</td></tr>
+                    <tr><td><strong>Percentage:</strong></td><td>${student.percentage}%</td></tr>
+                    <tr><td><strong>Grade:</strong></td><td>${student.grade}</td></tr>
+                    <tr><td><strong>Result:</strong></td><td>${student.result}</td></tr>
+                </table>
+            `;
+        }
+
+        function goBack() {
+            window.location.href = "student_marksheet.html"; // Redirects to input page
+        }
+    </script>
+
+</body>
+</html>

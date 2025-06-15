@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Information</title>
+    <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico">
+
+    <style>
+          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #dfe9f3, #ffffff);
+            margin: 0;
+            padding: 0;
+            animation: fadeIn 0.2s ease-in forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            background: #512DA8;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            width: 48%;
+            position: relative;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .success-message {
+            color: green;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        button {
+            background: #512DA8;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: #512DA8;
+            transform: scale(1.05);
+        }
+
+        table {
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        th, td {
+            font-family: 'Poppins', sans-serif;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        th {
+            background: #673AB7;
+            color: white;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 15px 35px;
+            font-size: 1.6em; /* Increased size */
+            background-color: white;
+            color: #512da8;
+            border: 2px solid #512da8;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-button:hover {
+            transform: scale(1.07);
+            box-shadow: 0px 7px 15px rgba(0, 0, 0, 0.25);
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <!-- ✅ Toastify JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+
+<body>
+    <button class="back-button" onclick="runScript('student_info.html')">Back</button>
+
+    <div class="container">
+        <div class="header">Insert Student Information</div>
+
+        <div class="form-container">
+            <!-- <div class="form-group">
+                <input type="text" id="student_id" placeholder="Student ID" readonly>
+                <span class="error-message" id="error-student_id"></span>
+            </div> -->
+
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Name">
+                <span class="error-message" id="error-name"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="father_name" placeholder="Father's Name">
+                <span class="error-message" id="error-father_name"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="mother_name" placeholder="Mother's Name">
+                <span class="error-message" id="error-mother_name"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="address" placeholder="Address">
+                <span class="error-message" id="error-address"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="tel" id="mobileno" placeholder="Mobile No">
+                <span class="error-message" id="error-mobileno"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="email" id="email_address" placeholder="Email Address">
+                <span class="error-message" id="error-email_address"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="date" id="date_of_birth">
+                <span class="error-message" id="error-date_of_birth"></span>
+            </div>
+
+            <div class="form-group">
+                <select id="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span class="error-message" id="error-gender"></span>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button type="button" onclick="validateAndInsertStudent()">Insert Student</button>
+        </div>
+
+        <div class="success-message" id="success-message">Student inserted successfully!</div>
+
+        
+    </div>
+
+    <script>
+async function validateAndInsertStudent() {
+    let student = {
+        name: document.getElementById("name").value.trim(),
+        father_name: document.getElementById("father_name").value.trim(),
+        mother_name: document.getElementById("mother_name").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        mobileno: document.getElementById("mobileno").value.trim(),
+        email_address: document.getElementById("email_address").value.trim(),
+        date_of_birth: document.getElementById("date_of_birth").value.trim(),
+        gender: document.getElementById("gender").value.trim()
+    };
+
+    // ✅ Form Validation
+    if (!student.name || !student.father_name || !student.mother_name || !student.address || 
+        !student.mobileno || !student.email_address || !student.date_of_birth || !student.gender) {
+        showToast("❌ All fields are required!", "error");
+        return;
+    }
+
+    // ✅ Mobile Number Validation (10 digits)
+    if (!/^\d{10}$/.test(student.mobileno)) {
+        showToast("❌ Mobile Number must be 10 digits!", "error");
+        return;
+    }
+
+    // ✅ Email Validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(student.email_address)) {
+        showToast("❌ Invalid Email Address!", "error");
+        return;
+    }
+
+    try {
+        let response = await fetch("http://127.0.0.1:5000/insert", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(student)
+        });
+
+        let result = await response.json();
+        if (response.ok && result.success) {
+            showToast("✅ Student Inserted Successfully!", "success");
+            setTimeout(() => {
+                window.location.href = "check_Std_info.html";
+            }, 2000);
+        } else {
+            showToast("❌ Error: " + result.message, "error");
+        }
+    } catch (error) {
+        console.error("Insert Error:", error);
+        showToast("❌ Server Error! Please try again.", "error");
+    }
+}
+
+// ✅ Toastify Function (Green for Success, Dark Red for Error)
+function showToast(message, type) {
+    Toastify({
+        text: message,
+        duration: 3000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: type === "success" ? "#27ae60" : "#c0392b",
+        stopOnFocus: true,
+        style: {
+            borderRadius: "8px",
+            boxShadow: "0px 5px 15px rgba(0,0,0,0.3)",
+            padding: "12px 20px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            color: "#ffffff",
+        }
+    }).showToast();
+}
+
+
+async function generateStudentId() {
+    try {
+        let response = await fetch("http://127.0.0.1:5000/generateStudentId", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch Student ID");
+
+        let data = await response.json();
+        document.getElementById("student_id").value = data.new_student_id;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+async function loadStudentData() {
+    try {
+        let response = await fetch("http://127.0.0.1:5000/studentsList", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include"
+        });
+
+        if (!response.ok) throw new Error("Failed to load student data");
+
+        let students = await response.json();
+        let tableBody = document.getElementById("studentTableBody");
+        tableBody.innerHTML = "";
+
+        students.forEach(student => {
+            let row = `<tr>
+                <td>${student.student_id}</td>
+                <td>${student.name}</td>
+                <td>${student.father_name}</td>
+                <td>${student.mother_name}</td>
+                <td>${student.address}</td>
+                <td>${student.mobileno}</td>
+                <td>${student.email_address}</td>
+                <td>${student.date_of_birth}</td>
+                <td>${student.gender}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    } catch (error) {
+        console.error("Error Loading Data:", error);
+    }
+}
+
+function runScript(scriptName) {
+            window.location.href = scriptName;
+        }
+        window.onload = function() {
+    var studentData = JSON.parse(localStorage.getItem('student_data'));
+
+    if (studentData) {
+        setFieldValue('studentName', studentData.name);
+        setFieldValue('studentId', studentData.id);
+        setFieldValue('studentEmail', studentData.email);
+    } else {
+        showErrorMessage("Student data not found!");
+    }
+};
+
+// ✅ Function to safely set field value (if element exists)
+function setFieldValue(fieldId, value) {
+    let element = document.getElementById(fieldId);
+    if (element) {
+        if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
+            element.value = value;
+        } else {
+            element.textContent = value;
+        }
+    }
+}
+
+// ✅ Function to show error message
+function showErrorMessage(message) {
+    let messageElement = document.getElementById('message');
+    if (messageElement) {
+        messageElement.textContent = message;
+        messageElement.classList.add('error');
+    }
+}
+
+</script>
+
+</body>
+</html>

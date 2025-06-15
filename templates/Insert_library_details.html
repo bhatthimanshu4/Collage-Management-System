@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-in-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background-color: #512DA8;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .form-box {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: scale(0.9);
+            animation: fadeInScale 0.1s ease-in-out forwards;
+            animation-delay: 0.1s;
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.8s ease-in-out forwards;
+            animation-delay: 0.4s;
+        }
+
+        .btn {
+            background: #512DA8;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            transition: 0.3s;
+        }
+
+        .toastify-error {
+            background: #660000 !important;
+            /* Dark Red */
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .toastify-success {
+            background: #28a745 !important;
+            /* ✅ Green Color */
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .cancel-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: 'Poppins', sans-serif;
+            padding: 10px 30px;
+            border: 1px solid #512da8;
+            background-color: white;
+            color: #512da8;
+            border-radius: 8px;
+            font-size: 18px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .cancel-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background: #3a2486;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="cancel-btn" onclick="window.location.href='collage_Libaray_fronted.html'">Back</button>
+
+    <div class="header">Library Management System</div>
+
+    <div class="container">
+        <div class="form-box">
+            <h2>Library Membership Info</h2>
+            <label for="mbtype">Membership Type</label>
+            <input type="text" id="mbtype" placeholder="Enter Membership Type">
+
+            <label for="firstname">First Name</label>
+            <input type="text" id="firstname" placeholder="Enter First Name">
+
+            <label for="lastname">Last Name</label>
+            <input type="text" id="lastname" placeholder="Enter Last Name">
+
+            <label for="address">Address</label>
+            <input type="text" id="address" placeholder="Enter Address">
+
+            <label for="post">Post</label>
+            <input type="text" id="post" placeholder="Enter Post">
+
+            <label for="mobileno">Mobile No.</label>
+            <input type="text" id="mobileno" placeholder="Enter Mobile No.">
+        </div>
+
+        <div class="form-box">
+            <h2>Book Details</h2>
+            <label for="title">Book Title</label>
+            <input type="text" id="title" placeholder="Enter Book Title">
+
+            <label for="author">Author</label>
+            <input type="text" id="author" placeholder="Enter Author">
+
+            <label for="borrow">Issue Date</label>
+            <input type="date" id="borrow">
+
+            <label for="due">Due Date</label>
+            <input type="date" id="due">
+
+            <label for="year_of_pub">Year of Publication</label>
+            <input type="text" id="year_of_pub" placeholder="Enter Year of Publication">
+        </div>
+    </div>
+
+    <div class="btn-container">
+        <button class="btn" onclick="insertData()">Insert Details</button>
+    </div>
+
+    <!-- Toastify JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        function showToast(message, type = "success") {
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                className: type === "success" ? "toastify-success" : "toastify-error",
+                stopOnFocus: true,
+            }).showToast();
+        }
+
+        function generateReferenceNo() {
+            return "REF" + Date.now() + Math.floor(Math.random() * 1000);
+        }
+
+        function insertData() {
+            const studentData = {
+                referenceno: generateReferenceNo(),
+                mbtype: document.getElementById('mbtype').value.trim(),
+                firstname: document.getElementById('firstname').value.trim(),
+                lastname: document.getElementById('lastname').value.trim(),
+                address: document.getElementById('address').value.trim(),
+                post: document.getElementById('post').value.trim(),
+                mobileno: document.getElementById('mobileno').value.trim(),
+                title: document.getElementById('title').value.trim(),
+                author: document.getElementById('author').value.trim(),
+                borrow: document.getElementById('borrow').value.trim(),
+                due: document.getElementById('due').value.trim(),
+                year_of_pub: document.getElementById('year_of_pub').value.trim()
+            };
+            fetch('http://127.0.0.1:5000/insert_library_details', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(studentData)
+})
+.then(response => response.json())
+.then(result => {
+    if (result.success) {
+        showToast("✅ Data Inserted Successfully!", "success");
+        setTimeout(() => {  
+            window.location.href = "Libaray_deatils.html";  
+        }, 2000);  // 2 sec delay so user can see success message
+    } else {
+        showToast("❌ " + result.message, "error");
+    }
+})
+.catch(error => showToast("❌ Failed to insert details.", "error"));
+        }
+
+    </script>
+</body>
+</html>

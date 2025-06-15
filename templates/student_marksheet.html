@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Management Menu</title>
+
+    <style>
+        /* Import Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #512da8, #6a0dad);
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            opacity: 0;
+            animation: fadeIn 0.2s ease-in forwards;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Menu Container */
+        .menu-container {
+            width: 85%;
+            max-width: 900px;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .menu-container:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Title */
+        .menu-title {
+            text-align: center;
+            font-size: 2.8em;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Menu Items */
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #f7f7f7;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: background 0.2s ease, transform 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .menu-item:hover {
+            background: #e1e9f3;
+            transform: scale(1.02);
+        }
+
+        .menu-item span {
+            font-size: 1.8em;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Buttons */
+        .menu-item button {
+            padding: 12px 28px;
+            font-size: 1.4em;
+            background: #512da8;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .menu-item button:hover {
+            background: #3f1c87;
+            transform: scale(1.05);
+            box-shadow: 0px 5px 12px rgba(81, 45, 168, 0.6);
+        }
+
+        /* Back Button */
+        .cancel-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 12px 25px;
+            font-size: 1.4em;
+            background: white;
+            color: #512da8;
+            border: 2px solid #512da8;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .cancel-btn:hover {
+            transform: scale(1.07);
+            background: WHITE;
+            color: #512da8;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .menu-container {
+                width: 95%;
+                padding: 30px;
+            }
+
+            .menu-title {
+                font-size: 2.4em;
+            }
+
+            .menu-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .menu-item span {
+                font-size: 1.5em;
+            }
+
+            .menu-item button {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .cancel-btn {
+                font-size: 1.2em;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-container">
+        <h1 class="menu-title">Student Marksheet </h1>
+
+        <div class="menu-item">
+            <span>Create Marksheet Student</span>
+            <button onclick="navigateTo('insert_marksheet_details.html')">create</button>
+        </div>
+
+        <div class="menu-item">
+            <span>Search Marksheet Details</span>
+            <button onclick="navigateTo('search_marksheet.html')">Search</button>
+        </div>
+
+        <div class="menu-item">
+            <span> All students Marksheet Details</span>
+            <button onclick="navigateTo('check_std_All_marksheet.html')">View</button>
+        </div>
+
+    </div>
+
+    <button class="cancel-btn" onclick="window.location.href = 'college_menu.html';">Back</button>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+
+</body>
+</html>

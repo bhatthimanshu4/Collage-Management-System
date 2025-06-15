@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <title>Modern Login Page</title>
+</head>
+
+<body>
+
+    <div class="container" id="container">
+        <!-- Sign-Up Form -->
+        <div class="form-container sign-up">
+            <form id="signup-form" onsubmit="registerUser(event)">
+                <h1>Create Account</h1>
+                <div class="social-icons">
+                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+                <span>or use your email for registration</span>
+
+                <input type="text" id="signup-unique-id" hidden>
+                <input type="text" placeholder="Username" id="signup-username" required>
+                <input type="email" placeholder="Email" id="signup-email" required>
+
+                <!-- ✅ Password Field -->
+                <div class="password-container">
+                    <input type="password" placeholder="Password" id="signup-password" required>
+                    <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePassword('signup-password', this)"></i>
+                </div>
+
+                <!-- ✅ Security Question Dropdown -->
+                <select id="signup-security-question" required>
+                    <option value="">-- Select a Security Question --</option>
+                    <option value="What is your pet's name?">What is your pet's name?</option>
+                    <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                    <option value="What is your first school's name?">What is your first school's name?</option>
+                </select>
+
+                <!-- ✅ Security Answer -->
+                <input type="text" id="signup-security-answer" placeholder="Answer" required>
+
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+
+        <!-- Sign-In Form -->
+        <div class="form-container sign-in">
+            <form id="login-form" onsubmit="loginUser(event)">
+                <h1>Sign In</h1>
+                <div class="social-icons">
+                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+                <span>or use your email password</span>
+                <input type="text" placeholder="Username" id="login-username" required>
+                <input type="email" placeholder="Email" id="login-email" required>
+
+                <div class="password-container">
+                    <input type="password" placeholder="Password" id="login-password" required>
+                    <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePassword('login-password', this)"></i>
+                </div>
+
+                <a href="forget_Password.html">Forgot Your Password?</a>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Welcome Back</h1>
+                    <p>Enter your personal details to use all site features</p>
+                    <button class="hidden" id="login">Sign In</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>College Management System</h1>
+                    <p>Register with your personal details to use all site features</p>
+                    <button class="hidden" id="register">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+function showToast(message, type = "success") {
+    Toastify({
+        text: message,
+        duration: 5000,
+        close: true,
+        gravity: "top",
+        position: "center",
+        stopOnFocus: true,
+        className: type === "success" ? "toast-success" : "toast-error",
+        style: {
+            background: type === "success" ? "#28a745" : "#b71c1c",
+            borderRadius: "8px",
+            fontSize: "18px",
+            padding: "15px 20px",
+            textAlign: "center",
+            fontWeight: "bold"
+        }
+    }).showToast();
+}
+
+async function registerUser(event) {
+    event.preventDefault();
+
+    let username = document.getElementById("signup-username").value.trim();
+    let email = document.getElementById("signup-email").value.trim();
+    let password = document.getElementById("signup-password").value.trim();
+    let question = document.getElementById("signup-security-question").value.trim();
+    let answer = document.getElementById("signup-security-answer").value.trim();
+
+    if (!username || !email || !password || !question || !answer) {
+        showToast("❌ All fields are required!", "error");
+        return;
+    }
+
+    let userData = { 
+        username, 
+        email, 
+        password, 
+        security_question: question, 
+        security_answer: answer 
+    };
+
+    console.log("📤 Sending Data:", userData); // ✅ Debugging
+
+    try {
+        let response = await fetch("http://127.0.0.1:5000/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData)
+        });
+
+        let result = await response.json();
+        console.log("📥 Response:", result); // ✅ Debugging
+
+        if (response.status === 201) {
+            showToast(`✅ Signup Successful!\nYour Unique ID: ${result.uniqueId}`, "success");
+            document.getElementById("signup-username").value = "";
+            document.getElementById("signup-email").value = "";
+            document.getElementById("signup-password").value = "";
+            document.getElementById("signup-security-question").value = "";
+            document.getElementById("signup-security-answer").value = "";
+        } else {
+            showToast(`❌ Signup failed: ${result.error}`, "error");
+        }
+    } catch (error) {
+        console.error("❌ Error:", error);
+        showToast("❌ An error occurred during signup. Please try again.", "error");
+    }
+}
+
+
+async function loginUser(event) {
+    event.preventDefault();
+
+    let username = document.getElementById("login-username").value.trim();
+    let email = document.getElementById("login-email").value.trim();
+    let password = document.getElementById("login-password").value.trim();
+
+    if (!username || !email || !password) {
+        showToast("❌ All fields are required!", "error");
+        return;
+    }
+
+    let userData = { username, email, password };
+
+    try {
+        let response = await fetch("http://127.0.0.1:5000/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData)
+        });
+
+        let result = await response.json();
+
+        if (response.status === 200) {
+            showToast(`✅ Login Successful! Welcome ${result.username}`, "success");
+            localStorage.setItem("currentUser", JSON.stringify(result));
+
+            setTimeout(() => {
+                window.location.href = "college_menu.html";
+            }, 2000);
+        } else {
+            showToast(`❌ Login failed: ${result.error}`, "error");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        showToast("❌ An error occurred during login. Please try again.", "error");
+    }
+}
+    </script>
+</body>
+</html>

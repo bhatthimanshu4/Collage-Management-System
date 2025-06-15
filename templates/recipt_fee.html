@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: 'Poppins', 'Roboto', sans-serif;
+            background-color: #e3f2fd;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .receipt-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            text-align: left;
+            margin: 40px auto;
+        }
+
+        .receipt-header {
+            background-color: #512da8;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 22px;
+            border-radius: 8px;
+        }
+
+        .details p { font-size: 16px; color: #424242; padding: 7px; }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            background-color: #512da8;
+            color: white;
+        }
+
+        .btn:hover { background-color: #1565c0; }
+    </style>
+</head>
+
+<body>
+    <h2 class="receipt-header">Fee Receipt</h2>
+    <div class="receipt-container" id="receiptContainer">
+        <div class="details" id="receiptDetails"></div>
+        <div class="btn-container">
+            <button class="btn" onclick="window.location.href = 'fee_recipt_genrate.html';">Back</button>
+            <button class="btn" onclick="window.print()">Print</button>
+        </div>
+    </div>
+
+   
+
+<script>
+    async function fetchReceipt() {
+
+        const params = new URLSearchParams(window.location.search);
+        const receiptNo = params.get("receipt_no");
+        console.log("Receipt No from URL:", receiptNo);
+
+        
+        if (!receiptNo) {
+            console.log("❌ Receipt number is missing in the URL!");
+            return;
+        }
+
+        try {
+            console.log("Receipt No from URL:", receiptNo);
+            const response = await fetch(`http://127.0.0.1:5000/get_receipt/${receiptNo}`);
+            const result = await response.json();
+
+            if (result.success) {
+                console.log(receiptNo, result);
+                displayReceipt(result.receipt);
+            } else {
+                alert("❌ " + result.message);
+            }
+        } catch (error) {
+            console.error("❌ Error fetching receipt:", error);
+            alert("❌ Failed to fetch receipt data.");
+        }
+    }
+
+    function displayReceipt(receipt) {
+        const receiptContainer = document.getElementById("receiptDetails");
+        receiptContainer.innerHTML = `
+            <p><strong>Receipt No:</strong> ${receipt.receipt_no}</p>
+            <p><strong>Student Name:</strong> ${receipt.student_name}</p>
+            <p><strong>Admission No:</strong> ${receipt.admission_no}</p>
+            <p><strong>Branch:</strong> ${receipt.branch}</p>
+            <p><strong>Date:</strong> ${receipt.date}</p>
+            <p><strong>Total Amount:</strong> ₹${receipt.total_amount}</p>
+            <p><strong>Paid Amount:</strong> ₹${receipt.paid_amount}</p>
+            <p><strong>Balance:</strong> ₹${receipt.balance}</p>
+        `;
+    }
+
+    window.onload = fetchReceipt;
+   
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+    
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <style>
+        body {
+            background-color: #512DA8;
+            font-family: 'Arial', sans-serif;
+            color: black;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            animation: fadeInPage 0.2s ease-in-out forwards;
+        }
+
+        @keyframes fadeInPage {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            animation: fadeInContainer 1s ease-in-out forwards 0.5s;
+        }
+
+        .search-frame input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            background-color: white;
+            color: black;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        .search-frame button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #512DA8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .search-frame button:hover {
+            background-color: #3f51b5;
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 10px 20px;
+            background-color: white;
+            color: #512DA8;
+            font-size: 16px;
+            border: 2px solid #512DA8;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #f2f2f2;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" onclick="runScript('student_info.html')">Back</button>
+
+    <div class="container">
+        <h1>Search</h1>
+        <div class="search-frame">
+            <h2>Enter Roll Number</h2>
+            <input type="text" id="rollNumber" placeholder="Roll Number">
+            <button onclick="search()">SEARCH</button>
+            <button onclick="runScript('std_insert_record.html')">CREATE NEW</button>
+        </div>
+    </div>
+
+    <!-- Toastify JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        function showToast(message, type = "success") {
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                backgroundColor: type === "success" ? "green" : "Darkred",
+                stopOnFocus: true,
+            }).showToast();
+        }
+
+        function search() {
+    localStorage.clear();
+    var rollNumber = document.getElementById('rollNumber').value.trim();
+
+    if (rollNumber !== "") {
+        fetch(`http://127.0.0.1:5000/search/${rollNumber}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem("studentData", JSON.stringify(data.student)); 
+                    
+                    // ✅ SUCCESS TOAST MESSAGE
+                    showToast("✅ Student Found! Redirecting...", "success");
+
+                    // ✅ 1 Second delay before redirect
+                    setTimeout(() => {
+                        window.location.href = "check_Single_Std_info.html";
+                    }, 1000);
+
+                } else {
+                    showToast("❌ No student found with this Roll Number!", "error");
+                }
+            })
+            .catch(error => {
+                showToast("❌ Error fetching student details!", "error");
+                console.error("Fetch Error:", error);
+            });
+    } else {
+        showToast("⚠️ Please enter a valid Roll Number.", "error");
+    }
+}
+
+
+        function runScript(scriptName) {
+            window.location.href = scriptName;
+        }
+    </script>
+
+</body>
+</html>

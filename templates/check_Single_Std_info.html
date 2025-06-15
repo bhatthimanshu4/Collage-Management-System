@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Details</title>
+    <style>
+        /* Fade-in effect for the page */
+        body {
+            font-family: 'Poppins', 'Roboto', sans-serif;
+            background-color: #e3f2fd;
+            text-align: center;
+            padding: 20px;
+            opacity: 0;  /* Initially hidden */
+            animation: fadeIn 1s ease-in forwards; /* Smooth fade-in animation */
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .receipt-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            text-align: left;
+            margin: 40px auto;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        /* Hover effect on the container */
+        .receipt-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .receipt-header {
+            background-color: #512da8;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 22px;
+            border-radius: 8px;
+            transition: background 0.3s ease-in-out;
+        }
+
+        /* Hover effect on the header */
+        .receipt-header:hover {
+            background-color: #3f51b5;
+        }
+
+        .details p { 
+            font-size: 16px; 
+            color: #424242; 
+            padding: 7px;
+            transition: color 0.3s ease-in-out;
+        }
+
+        /* Hover effect on details text */
+        .details p:hover {
+            color: #512da8;
+            font-weight: bold;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            background-color: #512da8;
+            color: white;
+            margin: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Hover effect on buttons */
+        .btn:hover {
+            background-color: #3f51b5;
+            transform: scale(1.1);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="receipt-container">
+        <div class="receipt-header">Student Details</div>
+        <div class="details" id="studentDetails"></div>
+
+        <div class="btn-container">
+            <button class="btn" onclick="window.location.href='student_details_search.html'">Back</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let student = JSON.parse(localStorage.getItem("studentData"));
+            
+            if (!student) {
+                document.getElementById('studentDetails').innerHTML = "<p>No student data found!</p>";
+                return;
+            }
+
+            document.getElementById('studentDetails').innerHTML = `
+                <p><strong>Student ID:</strong> ${student.student_id}</p>
+                <p><strong>Name:</strong> ${student.name}</p>
+                <p><strong>Father's Name:</strong> ${student.father_name}</p>
+                <p><strong>Mother's Name:</strong> ${student.mother_name}</p>
+                <p><strong>Address:</strong> ${student.address}</p>
+                <p><strong>Mobile:</strong> ${student.mobileno}</p>
+                <p><strong>Email:</strong> ${student.email_address}</p>
+                <p><strong>Date of Birth:</strong> ${student.date_of_birth}</p>
+                <p><strong>Gender:</strong> ${student.gender}</p>
+            `;
+        });
+    </script>
+
+</body>
+</html>

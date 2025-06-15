@@ -1,0 +1,209 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fee Report</title>
+        <style>  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+            body {
+                font-family: 'Poppins', sans-serif;
+                background-color: #f2f2f2;
+                margin: 0;
+                padding: 0;
+                opacity: 0;
+                animation: fadeIn 0.1s ease-in forwards;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .container {
+                width: 80%;
+                margin: 0 auto;
+                padding-top: 50px;
+            }
+
+            .header {
+                background-color: #512da8;
+                text-align: center;
+                padding: 30px;
+                color: white;
+            }
+
+            .header h1 {
+                font-size: 40px;
+                font-weight: bold;
+                margin: 0;
+            }
+
+            .table-container {
+                margin-top: 40px;
+            }
+
+            .table-container table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+                font-size: 16px;
+            }
+
+            .table-container th, .table-container td {
+                padding: 14px;
+                text-align: left;
+                border: 1px solid #ddd;
+            }
+
+            .table-container th {
+                background-color: #512da8;
+                color: white;
+            }
+
+            h2 {
+                color: black;
+                font-size: 30px;
+                font-weight: bold;
+                margin-bottom: 30px;
+                text-transform: uppercase;
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                opacity: 0;
+                animation: fadeInTitle 1s ease-in forwards 0.5s;
+            }
+
+            @keyframes fadeInTitle {
+                from {
+                    opacity: 0;
+                    transform: translateX(-50%) translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0);
+                }
+            }
+            .cancel-btn {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                font-family: 'Poppins', sans-serif;
+                padding: 10px 30px;
+                border: 1px solid #512da8;
+                background-color: white;
+                color: #512da8;
+                border-radius: 8px;
+                font-size: 18px;
+                transition: all 0.3s ease-in-out;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .cancel-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Row Fade-In Animation */
+            .fade-in-row {
+                opacity: 0;
+                transform: translateY(15px);
+                animation: fadeInRow 0.5s ease-in forwards;
+            }
+
+            @keyframes fadeInRow {
+                from {
+                    opacity: 0;
+                    transform: translateY(15px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <button class="cancel-btn" onclick="window.location.href = 'collage_fee_fronted.html';">Back</button>
+        <!-- Fee Report Table Section -->
+        <div class="container">
+            <h2>Fee Report</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Receipt No.</th>
+                            <th>Student Name</th>
+                            <th>Admission No.</th>
+                            <th>Branch</th>
+                            <th>Total Amount</th>
+                            <th>Paid Amount</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="feeReportTable">
+                        <!-- Dynamic data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <script>
+             function showToast(message, type = "success") {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "center",
+                    style: {
+                        background: type === "success" ? "green" : "red",
+                        color: "white",
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            }
+        window.onload = async function() {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/get_all_receipts');
+            const data = await response.json();
+
+            if (data.success) {
+                let tableBody = document.getElementById('feeReportTable');
+                tableBody.innerHTML = "";  // Table clear karna
+
+                data.receipts.forEach((receipt, index) => {
+                    let tableRow = document.createElement("tr");
+                    tableRow.classList.add("fade-in-row");
+                    tableRow.style.animationDelay = `${index * 0.2}s`;
+
+                    tableRow.innerHTML = `
+                        <td>${receipt.receipt_no}</td>
+                        <td>${receipt.student_name}</td>
+                        <td>${receipt.admission_no}</td>
+                        <td>${receipt.branch}</td>
+                        <td>${receipt.total_amount}</td>
+                        <td>${receipt.paid_amount}</td>
+                        <td>${receipt.balance}</td>
+                    `;
+
+                    tableBody.appendChild(tableRow);
+                });
+                showToast("✅ Fee records loaded successfully!", "success");
+
+ } else {
+    showToast("❌ No fee receipts found!", "error");
+}
+} catch (error) {
+console.error("Error:", error);
+showToast("❌ Failed to fetch fee receipts!", "error");
+}
+    };
+
+        </script>
+    </body>
+    </html>
+

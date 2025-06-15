@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Student</title>
+
+    <!-- ✅ Toastify.js CDN -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(45deg, #512da8, #673ab7, #3f51b5);
+            color: white;
+            opacity: 0;
+            animation: fadeIn 0.4s forwards;
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.4s forwards 0.4s;
+        }
+
+        h2 { font-size: 24px; font-weight: bold; color: black; }
+
+        input, button {
+            padding: 12px;
+            font-size: 18px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 100%;
+            transition: 0.3s ease;
+        }
+
+        button {
+            background-color: #5c6bc0;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #3f51b5;
+        }
+
+        /* ✅ FIXED Back Button (Top-Left) */
+        .back-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 10px 15px;
+            background-color: white;
+            color: #512DA8;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #512DA8;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #f2f2f2;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .back-button {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ✅ Back button at Top-Left -->
+    <a href="student_info.html" class="back-button">Back</a>
+
+    <div class="container">
+        <h2>Delete Student</h2>
+        <input type="number" id="studentIdInput" placeholder="Enter Student ID">
+        <button onclick="searchStudent()">Search Student</button>
+    </div>
+
+    <script>
+        function showToast(message, color = "green") {
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                backgroundColor: color,
+                stopOnFocus: true,
+            }).showToast();
+        }
+
+        async function searchStudent() {
+            let studentId = document.getElementById("studentIdInput").value.trim();
+
+            if (!studentId) {
+                showToast("❌ Please enter a valid Student ID!", "red");
+                return;
+            }
+
+            try {
+                let response = await fetch(`http://127.0.0.1:5000/get_student/${studentId}`);
+                let data = await response.json();
+
+                if (data.success) {
+                    showToast("✅ Student found! Redirecting...", "green");
+                    setTimeout(() => {
+                        window.location.href = `std_show_data_for_delete_page.html?id=${studentId}`;
+                    }, 2000);
+                } else {
+                    showToast("❌ No Data Found!", "Darkred");
+                }
+            } catch (error) {
+                console.error("Error fetching student:", error);
+                showToast("❌ Error fetching student details!", "Darkred");
+            }
+        }
+    </script>
+
+</body>
+</html>
